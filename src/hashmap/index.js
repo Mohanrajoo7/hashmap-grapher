@@ -28,21 +28,24 @@ const Table = (dataset, filtered) => (
 class Hashmap extends Component {
   constructor(props) {
     super(props);
-    this.state = { dataset: [
-        {index: 1, key: "bar", value: 123},
-        {index: 2, key: "arroz", value: 123},
-        {index: 3, key: "zorra", value: 123},
-        {index: 4, key: "foo", value: 123}
-      ]
+    this.state = { dataset: []
     }
     this.push = this.push.bind(this);
     this.hash = this.hash.bind(this);
   }
 
-  hash(key) {
-    return key.split('').reduce((a, c, i) => {
+  hash(key, index) {
+    index = index || 0;
+
+    let hashed = key.split('').reduce((a, c, i) => {
       return a + c.charCodeAt(0) - 65;
-    }, 0);
+    }, 0) + index;
+
+    if(!this.state.dataset[hashed])
+      return hashed;
+
+    return this.state.dataset[hashed]
+    .hasOwnProperty('value') ? this.hash(key, ++index) : hashed;
   }
 
   push(entry) {
